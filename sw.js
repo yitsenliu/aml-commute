@@ -1,4 +1,4 @@
-const SHELL='aml-shell-v1',PAGES='aml-pages-v1';
+const SHELL='aml-shell-v2',PAGES='aml-pages-v1';
 const FILES=['./','./index.html','./style.css','./app.js','./storage.js','./icon.svg','./manifest.webmanifest','./content.bin','./pages-index.json'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(SHELL).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
