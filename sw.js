@@ -1,0 +1,5 @@
+const SHELL='aml-shell-v1',PAGES='aml-pages-v1';
+const FILES=['./','./index.html','./style.css','./app.js','./storage.js','./icon.svg','./manifest.webmanifest','./content.bin','./pages-index.json'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(SHELL).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==self.location.origin)return;const isPage=/\/pages-\d+\.bin$/.test(new URL(e.request.url).pathname);e.respondWith((async()=>{if(isPage){const c=await caches.open(PAGES);const hit=await c.match(e.request);if(hit)return hit;const r=await fetch(e.request);if(r.ok)await c.put(e.request,r.clone());return r}try{const r=await fetch(e.request);if(r.ok){const c=await caches.open(SHELL);await c.put(e.request,r.clone())}return r}catch{const hit=await caches.match(e.request);if(hit)return hit;if(e.request.mode==='navigate')return await caches.match('./index.html');return new Response('Offline',{status:503})}})())});
